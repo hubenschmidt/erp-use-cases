@@ -238,6 +238,112 @@
           }
         }
       ]
+    },
+    {
+      "name": "AI",
+      "item": [
+        {
+          "name": "Query - Check Stock",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/query",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "query"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"What is the stock level for WIDGET-001?\",\n  \"session_id\": \"demo-session\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Query - List Pending Orders",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/query",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "query"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Show me all pending orders\",\n  \"session_id\": \"demo-session\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Query - Transfer Stock",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/query",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "query"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Transfer 5 units of GADGET-002 from WH-EAST to WH-WEST\",\n  \"session_id\": \"demo-session\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Query - Low Stock Alert",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/query",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "query"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Which items are below their reorder point?\",\n  \"session_id\": \"demo-session\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Query - Order Summary",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/query",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "query"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Give me an order analytics summary\",\n  \"session_id\": \"demo-session\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Clear Session",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/session/demo-session",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "session", "demo-session"]
+            }
+          }
+        }
+      ]
     }
   ]
 }

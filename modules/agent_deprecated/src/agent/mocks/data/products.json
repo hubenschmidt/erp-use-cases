@@ -1,0 +1,54 @@
+{
+  "products": [
+    {
+      "sku": "WIDGET-001",
+      "name": "Standard Widget",
+      "description": "High-quality standard widget for general use",
+      "category": "Widgets",
+      "unit_cost": 8.00,
+      "unit_price": 12.50,
+      "tags": ["high-velocity", "standard", "industrial"],
+      "barcode": "012345678901"
+    },
+    {
+      "sku": "GADGET-002",
+      "name": "Premium Gadget",
+      "description": "Premium gadget with advanced features",
+      "category": "Gadgets",
+      "unit_cost": 30.00,
+      "unit_price": 45.00,
+      "tags": ["premium", "high-margin", "electronics"],
+      "barcode": "012345678902"
+    },
+    {
+      "sku": "COMP-003",
+      "name": "Component A",
+      "description": "Essential component for assembly",
+      "category": "Components",
+      "unit_cost": 2.00,
+      "unit_price": 3.25,
+      "tags": ["high-velocity", "bulk", "assembly"],
+      "barcode": "012345678903"
+    },
+    {
+      "sku": "LEGACY-004",
+      "name": "Legacy Part",
+      "description": "Discontinued part - limited stock remaining",
+      "category": "Legacy",
+      "unit_cost": 5.00,
+      "unit_price": 8.00,
+      "tags": ["discontinued", "dead-stock", "clearance"],
+      "barcode": "012345678904"
+    },
+    {
+      "sku": "SEASONAL-005",
+      "name": "Holiday Special",
+      "description": "Seasonal item for Q4 promotions",
+      "category": "Seasonal",
+      "unit_cost": 4.00,
+      "unit_price": 7.50,
+      "tags": ["seasonal", "Q4", "promotional"],
+      "barcode": "012345678905"
+    }
+  ]
+}

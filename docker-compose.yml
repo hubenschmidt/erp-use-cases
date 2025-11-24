@@ -13,9 +13,8 @@ services:
     volumes:
       # Mount source code with consistency mode for better performance
       - ./modules/agent:/app:delegated
-      # Exclude these from the mount to avoid conflicts
-      - /app/__pycache__
-      - /app/.pytest_cache
+      # Exclude node_modules from mount to use container's installed modules
+      - /app/node_modules
     ports:
       - "8000:8000" # FastAPI server
 

@@ -1,0 +1,32 @@
+{
+  "frontline": {
+    "model": "gpt-5-chat-latest",
+    "description": "Initial routing agent - determines if request needs orchestration"
+  },
+  "orchestrator": {
+    "model": "gpt-4o",
+    "description": "Routes requests to specialized workers and coordinates evaluation"
+  },
+  "evaluator": {
+    "model": "gpt-5",
+    "description": "Validates worker outputs against success criteria"
+  },
+  "workers": {
+    "erp": {
+      "model": "gpt-4o-mini",
+      "description": "Handles ERP operations - inventory, orders, customers"
+    },
+    "search": {
+      "model": "gpt-4o-mini",
+      "description": "Performs web searches and synthesizes results"
+    },
+    "email": {
+      "model": "gpt-4o-mini",
+      "description": "Composes and sends emails"
+    },
+    "general": {
+      "model": "gpt-4o-mini",
+      "description": "Handles general conversation and simple queries"
+    }
+  }
+}

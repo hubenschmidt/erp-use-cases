@@ -1,0 +1,34 @@
+{
+  "customers": [
+    {
+      "id": "CUST-001",
+      "name": "Acme Manufacturing",
+      "email": "orders@acme.com",
+      "tags": ["tier-1", "manufacturing", "net-30"],
+      "billing_address": "100 Industrial Pkwy, Detroit, MI 48201",
+      "shipping_address": "100 Industrial Pkwy, Detroit, MI 48201",
+      "credit_limit": 50000.00,
+      "balance": 3175.00
+    },
+    {
+      "id": "CUST-002",
+      "name": "TechStart Inc",
+      "email": "purchasing@techstart.io",
+      "tags": ["tier-2", "technology", "net-15"],
+      "billing_address": "200 Innovation Dr, Austin, TX 78701",
+      "shipping_address": "200 Innovation Dr, Austin, TX 78701",
+      "credit_limit": 25000.00,
+      "balance": 1700.00
+    },
+    {
+      "id": "CUST-003",
+      "name": "BuildRight Construction",
+      "email": "supply@buildright.com",
+      "tags": ["tier-1", "construction", "net-45"],
+      "billing_address": "300 Builder Blvd, Phoenix, AZ 85001",
+      "shipping_address": "350 Job Site Rd, Phoenix, AZ 85001",
+      "credit_limit": 75000.00,
+      "balance": 0.00
+    }
+  ]
+}
