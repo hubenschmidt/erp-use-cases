@@ -61,7 +61,7 @@ cp .env.example .env
 # Add your OPENAI_API_KEY to .env
 
 # Start with Docker Compose
-docker-compose up
+docker compose up
 ```
 
 ### API Endpoints
