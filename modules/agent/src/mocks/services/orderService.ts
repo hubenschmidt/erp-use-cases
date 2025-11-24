@@ -1,3 +1,14 @@
+/**
+ * Order Service
+ *
+ * Business logic for order management operations including:
+ * - Order queries with status/customer filtering
+ * - Order creation with automatic ID generation and total calculation
+ * - Order status workflow management
+ * - Order summary/analytics
+ * - Customer data access
+ */
+
 import * as orderRepo from '../repositories/orderRepo.js';
 import * as customerRepo from '../repositories/customerRepo.js';
 
@@ -8,6 +19,9 @@ interface OrderItem {
   location: string;
 }
 
+/**
+ * Get all orders with optional filtering by status and/or customer.
+ */
 export const getOrders = (status?: string, customerId?: string) => {
   let orders = orderRepo.getAllOrders();
 
@@ -21,6 +35,9 @@ export const getOrders = (status?: string, customerId?: string) => {
   return orders;
 };
 
+/**
+ * Get order details enriched with customer information (name, email, shipping address).
+ */
 export const getOrderDetail = (orderId: string) => {
   const order = orderRepo.findOrderById(orderId);
   if (!order) return null;
@@ -35,6 +52,11 @@ export const getOrderDetail = (orderId: string) => {
   };
 };
 
+/**
+ * Create a new order for a customer.
+ * Auto-generates order ID (ORD-10001, 10002, etc.) and calculates total from items.
+ * Validates customer exists before creating order.
+ */
 export const createOrder = (customerId: string, items: OrderItem[]) => {
   const customer = customerRepo.findCustomerById(customerId);
   if (!customer) {
@@ -57,6 +79,10 @@ export const createOrder = (customerId: string, items: OrderItem[]) => {
   return orderRepo.appendOrder(newOrder);
 };
 
+/**
+ * Update order status (pending → processing → shipped → delivered).
+ * Validates status is in allowed list. Sets shipped_at timestamp when status becomes 'shipped'.
+ */
 export const updateOrderStatus = (orderId: string, newStatus: string) => {
   const validStatuses = orderRepo.getValidStatuses();
   if (!validStatuses.includes(newStatus)) {
@@ -76,6 +102,9 @@ export const updateOrderStatus = (orderId: string, newStatus: string) => {
   return order;
 };
 
+/**
+ * Get order analytics: count by status, total orders, and total revenue.
+ */
 export const getOrderSummary = () => {
   const orders = orderRepo.getAllOrders();
   const validStatuses = orderRepo.getValidStatuses();
@@ -99,6 +128,9 @@ export const getOrderSummary = () => {
   };
 };
 
+/**
+ * Get all customers.
+ */
 export const getCustomers = () => {
   return customerRepo.getAllCustomers();
 };

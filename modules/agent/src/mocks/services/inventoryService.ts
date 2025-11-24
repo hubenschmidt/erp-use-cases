@@ -1,6 +1,19 @@
+/**
+ * Inventory Service
+ *
+ * Business logic for inventory management operations including:
+ * - Stock queries by location or SKU
+ * - Low stock alerts based on reorder points
+ * - Dead stock identification with carrying cost calculations
+ * - Inter-warehouse stock transfers
+ */
+
 import * as inventoryRepo from '../repositories/inventoryRepo.js';
 import * as productRepo from '../repositories/productRepo.js';
 
+/**
+ * Get all stock items, optionally filtered by warehouse location.
+ */
 export const getStock = (location?: string) => {
   if (location) {
     return inventoryRepo.findStockByLocation(location);
@@ -8,6 +21,10 @@ export const getStock = (location?: string) => {
   return inventoryRepo.getAllStock();
 };
 
+/**
+ * Get aggregated stock information for a specific SKU across all locations.
+ * Returns total on-hand, available quantity, and breakdown by location.
+ */
 export const getStockBySku = (sku: string) => {
   const items = inventoryRepo.findStockBySku(sku);
   const totalOnHand = items.reduce((sum, s) => sum + s.qty_on_hand, 0);
@@ -23,6 +40,10 @@ export const getStockBySku = (sku: string) => {
   };
 };
 
+/**
+ * Identify SKUs with stock levels below their reorder points.
+ * Returns items grouped by SKU with details on which locations are below threshold.
+ */
 export const getLowStockAlerts = () => {
   const stock = inventoryRepo.getAllStock();
   const skuTotals = new Map<string, {
@@ -60,6 +81,11 @@ export const getLowStockAlerts = () => {
   return Array.from(skuTotals.values()).filter((data) => data.locations_below.length > 0);
 };
 
+/**
+ * Find inventory items with no movement for specified days.
+ * Calculates estimated carrying cost (25% annual rate) for each dead stock item.
+ * Results sorted by days since last movement (oldest first).
+ */
 export const getDeadStock = (daysThreshold: number = 90) => {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - daysThreshold);
@@ -91,6 +117,11 @@ export const getDeadStock = (daysThreshold: number = 90) => {
   );
 };
 
+/**
+ * Transfer stock between warehouse locations.
+ * Validates available quantity (on-hand minus reserved) before transfer.
+ * Creates new stock record at destination if SKU doesn't exist there.
+ */
 export const transferStock = (
   sku: string,
   fromLocation: string,
@@ -143,6 +174,9 @@ export const transferStock = (
   };
 };
 
+/**
+ * Get all warehouse locations.
+ */
 export const getLocations = () => {
   return inventoryRepo.getAllLocations();
 };
