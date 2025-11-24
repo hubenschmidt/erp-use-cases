@@ -34,7 +34,22 @@ An AI agent can proactively warn: "GADGET-002 is below reorder point at WH-WEST.
 
 ---
 
-### 3. Dead Stock / Carrying Cost
+### 3. Demand Forecasting
+
+**Challenge:** Understocking leads to stockouts and lost sales, while overstocking ties up capital in excess inventory. Without data-driven demand predictions, companies either play it too safe (wasting money on excess stock) or too lean (risking stockouts).
+
+**Solution:** The forecasting service analyzes historical sales data to predict future demand:
+- Calculates moving averages from historical sales patterns
+- Identifies seasonal trends (e.g., Q4 holiday spikes)
+- Generates 30-day demand forecasts per product
+- Flags products at risk of stockout based on current inventory vs predicted demand
+- Recommends optimal reorder quantities with safety stock buffer
+
+An AI agent can proactively report: "SEASONAL-005 has only 65 units on hand but we forecast 150+ units demand next month based on Q4 patterns. Recommend reordering 200 units now." or answer: "What's the demand forecast for WIDGET-001?"
+
+---
+
+### 4. Dead Stock / Carrying Cost
 
 **Challenge:** Inventory that sits without selling ties up cash and incurs storage costs. Companies often don't realize they have thousands of dollars sitting in products that haven't moved in months.
 
@@ -47,7 +62,7 @@ An AI agent can report: "You have $2,340 in carrying costs from dead stock. The 
 
 ---
 
-### 4. Inter-Warehouse Balancing
+### 5. Inter-Warehouse Balancing
 
 **Challenge:** Stock imbalances between locations lead to stockouts in one warehouse while another has excess. Manual transfers are slow and error-prone.
 
@@ -61,7 +76,7 @@ An AI agent can execute: "Transfer 50 units of GADGET-002 from WH-EAST to WH-WES
 
 ---
 
-### 5. Order Lifecycle Management
+### 6. Order Lifecycle Management
 
 **Challenge:** Orders move through multiple stages (pending → processing → shipped → delivered). Tracking status, knowing what's stuck, and updating correctly requires careful coordination.
 
@@ -75,7 +90,7 @@ An AI agent can answer: "How many orders are stuck in processing?" or execute "S
 
 ---
 
-### 6. Customer Context in Orders
+### 7. Customer Context in Orders
 
 **Challenge:** Order data alone doesn't tell you where to ship or who to contact. You need customer information joined with order details.
 
@@ -88,7 +103,7 @@ An AI agent can provide: "Order ORD-10001 is for Acme Corp, shipping to 123 Main
 
 ---
 
-### 7. Business Analytics
+### 8. Business Analytics
 
 **Challenge:** Managers need quick answers about overall business health without running complex reports.
 
@@ -117,6 +132,9 @@ The mocks enable natural language queries like:
 
 - "What's our inventory situation for WIDGET-001?"
 - "Show me items that need reordering"
+- "What's the demand forecast for GADGET-002 over the next 30 days?"
+- "Which products are at risk of stockout?"
+- "Show me seasonal patterns for SEASONAL-005"
 - "Find dead stock costing us money"
 - "Move 20 units of GADGET-002 from East to Central warehouse"
 - "Create an order for customer CUST-001 with 50 widgets"
