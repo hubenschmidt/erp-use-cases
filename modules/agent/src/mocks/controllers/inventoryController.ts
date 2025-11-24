@@ -1,7 +1,5 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import * as inventoryService from '../services/inventoryService.js';
-
-export const inventoryRouter = Router();
 
 interface TransferRequest {
   sku: string;
@@ -10,22 +8,22 @@ interface TransferRequest {
   qty: number;
 }
 
-inventoryRouter.get('/inventory', (req: Request, res: Response) => {
+export const getInventory = (req: Request, res: Response) => {
   const location = req.query.location as string | undefined;
   res.json(inventoryService.getStock(location));
-});
+};
 
-inventoryRouter.get('/inventory/:sku', (req: Request, res: Response) => {
+export const getInventoryBySku = (req: Request, res: Response) => {
   res.json(inventoryService.getStockBySku(req.params.sku));
-});
+};
 
-inventoryRouter.post('/inventory/transfer', (req: Request, res: Response) => {
+export const transferStock = (req: Request, res: Response) => {
   const body = req.body as TransferRequest;
   res.json(
     inventoryService.transferStock(body.sku, body.from_location, body.to_location, body.qty)
   );
-});
+};
 
-inventoryRouter.get('/locations', (_req: Request, res: Response) => {
+export const getLocations = (_req: Request, res: Response) => {
   res.json(inventoryService.getLocations());
-});
+};

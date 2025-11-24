@@ -1,9 +1,7 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { process as frontlineProcess } from '../../frontline.js';
 import { process as orchestratorProcess } from '../../orchestrator.js';
 import { Message } from '../../models.js';
-
-export const aiRouter = Router();
 
 const sessions = new Map<string, Message[]>();
 
@@ -90,16 +88,7 @@ const parseResponse = (response: string): ParsedResponse => {
   return { message, data, evaluation };
 };
 
-/**
- * POST /api/ai/query
- * Process a natural language query through the agent system.
- * This allows REST API consumers to interact with the AI agent
- * for ERP operations using conversational language.
- *
- * Body: { query: string, session_id?: string }
- * Returns: { success: boolean, message: string, data: object | null, session_id: string, routed_to_orchestrator: boolean }
- */
-aiRouter.post('/ai/query', async (req: Request, res: Response) => {
+export const query = async (req: Request, res: Response) => {
   const { query, session_id } = req.body as QueryRequest;
 
   if (!query) {
@@ -169,13 +158,9 @@ aiRouter.post('/ai/query', async (req: Request, res: Response) => {
       session_id: sessionId,
     });
   }
-});
+};
 
-/**
- * DELETE /api/ai/session/:sessionId
- * Clear conversation history for a session.
- */
-aiRouter.delete('/ai/session/:sessionId', (req: Request, res: Response) => {
+export const clearSession = (req: Request, res: Response) => {
   const { sessionId } = req.params;
 
   if (sessions.has(sessionId)) {
@@ -184,4 +169,4 @@ aiRouter.delete('/ai/session/:sessionId', (req: Request, res: Response) => {
   } else {
     res.status(404).json({ success: false, error: 'Session not found' });
   }
-});
+};
