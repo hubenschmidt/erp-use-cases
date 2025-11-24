@@ -1,0 +1,62 @@
+{
+  "orders": [
+    {
+      "id": "ORD-10001",
+      "customer_id": "CUST-001",
+      "status": "shipped",
+      "created_at": "2025-11-18T10:30:00Z",
+      "shipped_at": "2025-11-20T14:00:00Z",
+      "items": [
+        {"sku": "WIDGET-001", "qty": 50, "unit_price": 12.50, "location": "WH-EAST"},
+        {"sku": "COMP-003", "qty": 100, "unit_price": 3.25, "location": "WH-EAST"}
+      ],
+      "total": 950.00
+    },
+    {
+      "id": "ORD-10002",
+      "customer_id": "CUST-002",
+      "status": "processing",
+      "created_at": "2025-11-21T09:15:00Z",
+      "shipped_at": null,
+      "items": [
+        {"sku": "GADGET-002", "qty": 20, "unit_price": 45.00, "location": "WH-WEST"}
+      ],
+      "total": 900.00
+    },
+    {
+      "id": "ORD-10003",
+      "customer_id": "CUST-001",
+      "status": "pending",
+      "created_at": "2025-11-22T16:45:00Z",
+      "shipped_at": null,
+      "items": [
+        {"sku": "WIDGET-001", "qty": 200, "unit_price": 12.50, "location": "WH-CENTRAL"},
+        {"sku": "GADGET-002", "qty": 15, "unit_price": 45.00, "location": "WH-EAST"}
+      ],
+      "total": 3175.00
+    },
+    {
+      "id": "ORD-10004",
+      "customer_id": "CUST-003",
+      "status": "quote",
+      "created_at": "2025-11-23T08:00:00Z",
+      "shipped_at": null,
+      "items": [
+        {"sku": "COMP-003", "qty": 500, "unit_price": 3.00, "location": "WH-EAST"}
+      ],
+      "total": 1500.00
+    },
+    {
+      "id": "ORD-10005",
+      "customer_id": "CUST-002",
+      "status": "invoiced",
+      "created_at": "2025-11-10T11:00:00Z",
+      "shipped_at": "2025-11-12T09:30:00Z",
+      "items": [
+        {"sku": "LEGACY-004", "qty": 100, "unit_price": 8.00, "location": "WH-EAST"}
+      ],
+      "total": 800.00
+    }
+  ],
+  "statuses": ["quote", "pending", "processing", "shipped", "invoiced", "cancelled"]
+}
