@@ -10,8 +10,8 @@ from typing import Dict, List
 from dotenv import load_dotenv
 from fastapi import WebSocket
 
-from agent.frontline import Frontline
-from agent.orchestrator import Orchestrator
+from agent.frontline import process as frontline_process
+from agent.orchestrator import process as orchestrator_process
 
 # -----------------------------------------------------------------------------
 # Setup
@@ -27,8 +27,6 @@ if not API_KEY:
 # In-memory conversation storage (keyed by user_uuid)
 # -----------------------------------------------------------------------------
 _conversations: Dict[str, List[Dict[str, str]]] = {}
-_orchestrator: Orchestrator | None = None
-_frontline: Frontline | None = None
 
 
 def get_conversation(user_uuid: str) -> List[Dict[str, str]]:
@@ -36,22 +34,6 @@ def get_conversation(user_uuid: str) -> List[Dict[str, str]]:
     if user_uuid not in _conversations:
         _conversations[user_uuid] = []
     return _conversations[user_uuid]
-
-
-def get_orchestrator() -> Orchestrator:
-    """Get or create the orchestrator instance."""
-    global _orchestrator
-    if _orchestrator is None:
-        _orchestrator = Orchestrator()
-    return _orchestrator
-
-
-def get_frontline() -> Frontline:
-    """Get or create the frontline instance."""
-    global _frontline
-    if _frontline is None:
-        _frontline = Frontline()
-    return _frontline
 
 
 def _extract_user_input(data: str | List[Dict[str, str]]) -> str:
@@ -93,29 +75,29 @@ async def handle_chat(
 
     logger.info(f"Processing message: {user_input[:50]}")
 
-    frontline = get_frontline()
-    orchestrator = get_orchestrator()
     conversation = get_conversation(user_uuid)
     conversation.append({"role": "user", "content": user_input})
 
     try:
-        should_route, result = await frontline.process(user_input, conversation)
+        should_route, result = await frontline_process(user_input, conversation)
 
-        if should_route:
-            logger.info("Routing to orchestrator for specialized processing")
-            await websocket.send_text(
-                json.dumps({"on_chat_model_stream": "Processing your request..."})
-            )
-
-            response = await orchestrator.process(user_input, conversation)
-
-            await websocket.send_text(json.dumps({"on_chat_model_stream": "\n\n"}))
-            await websocket.send_text(json.dumps({"on_chat_model_stream": response}))
-        else:
+        if not should_route:
             logger.info("Frontline handled directly")
             response = result
             await websocket.send_text(json.dumps({"on_chat_model_stream": response}))
+            await websocket.send_text(json.dumps({"on_chat_model_end": True}))
+            conversation.append({"role": "assistant", "content": response})
+            return
 
+        logger.info("Routing to orchestrator for specialized processing")
+        await websocket.send_text(
+            json.dumps({"on_chat_model_stream": "Processing your request..."})
+        )
+
+        response = await orchestrator_process(user_input, conversation)
+
+        await websocket.send_text(json.dumps({"on_chat_model_stream": "\n\n"}))
+        await websocket.send_text(json.dumps({"on_chat_model_stream": response}))
         await websocket.send_text(json.dumps({"on_chat_model_end": True}))
         conversation.append({"role": "assistant", "content": response})
 
