@@ -23,7 +23,7 @@ API_KEY = os.getenv("OPENAI_API_KEY")
 if not API_KEY:
     logger.warning("OPENAI_API_KEY is missing. Agent will not function until configured.")
 
-MODEL_NAME = os.getenv("OPENAI_MODEL", "gpt-4o")
+MODEL_NAME = os.getenv("OPENAI_MODEL", "gpt-5-chat-latest")
 SYSTEM_PROMPT = os.getenv(
     "SYSTEM_PROMPT",
     "You are a helpful assistant. Your goal is to give contemplative, yet concise answers.",
@@ -62,6 +62,15 @@ def _extract_user_input(data: str | List[Dict[str, str]]) -> str:
     if not user_messages:
         return ""
     return user_messages[-1]["content"]
+
+
+def _extract_token(event) -> str | None:
+    """Extract text delta token from stream event."""
+    if not isinstance(event, RawResponsesStreamEvent):
+        return None
+    if event.data.type != "response.output_text.delta":
+        return None
+    return event.data.delta or None
 
 
 # -----------------------------------------------------------------------------
@@ -108,11 +117,7 @@ async def handle_chat(
         logger.info("Streaming events...")
 
         async for event in result.stream_events():
-            if not isinstance(event, RawResponsesStreamEvent):
-                continue
-            if event.data.type != "response.output_text.delta":
-                continue
-            token = event.data.delta
+            token = _extract_token(event)
             if token:
                 pieces.append(token)
                 await websocket.send_text(
