@@ -39,52 +39,55 @@ interface ParsedResponse {
   evaluation: EvaluationInfo | null;
 }
 
-const parseResponse = (response: string): ParsedResponse => {
-  let message = response;
-  let data: unknown | null = null;
-  let evaluation: EvaluationInfo | null = null;
-
-  // Extract evaluation metadata if present
+const extractEvaluation = (response: string): { evaluation: EvaluationInfo | null; remaining: string } => {
   const evalMatch = response.match(/\n\n\[Evaluation: (\w+) \| Score: (\d+)\/100\]\n\[Criteria: (.+?)\]\n\[Feedback: (.+)\]$/s);
   if (evalMatch) {
-    evaluation = {
-      status: evalMatch[1],
-      score: parseInt(evalMatch[2], 10),
-      criteria: evalMatch[3].trim(),
-      feedback: evalMatch[4].trim(),
+    return {
+      evaluation: {
+        status: evalMatch[1],
+        score: parseInt(evalMatch[2], 10),
+        criteria: evalMatch[3].trim(),
+        feedback: evalMatch[4].trim(),
+      },
+      remaining: response.slice(0, evalMatch.index),
     };
-    response = response.slice(0, evalMatch.index);
   }
 
-  // Also handle old format for backwards compatibility
-  if (!evaluation) {
-    const noteMatch = response.match(/\n\n\[Note: (.+)\]$/s);
-    if (noteMatch) {
-      evaluation = {
+  const noteMatch = response.match(/\n\n\[Note: (.+)\]$/s);
+  if (noteMatch) {
+    return {
+      evaluation: {
         status: 'partial',
         score: 0,
         criteria: '',
         feedback: noteMatch[1].trim(),
-      };
-      response = response.slice(0, noteMatch.index);
-    }
+      },
+      remaining: response.slice(0, noteMatch.index),
+    };
   }
 
-  // Extract message and JSON result
+  return { evaluation: null, remaining: response };
+};
+
+const extractData = (response: string): { message: string; data: unknown | null } => {
   const resultMatch = response.match(/^(.*?)\n\nResult:\n(.+)$/s);
-
-  if (resultMatch) {
-    message = resultMatch[1].trim();
-    const jsonStr = resultMatch[2].trim();
-
-    try {
-      data = JSON.parse(jsonStr);
-    } catch {
-      // If JSON parse fails, include it in message
-      message = response;
-    }
+  if (!resultMatch) {
+    return { message: response, data: null };
   }
 
+  const message = resultMatch[1].trim();
+  const jsonStr = resultMatch[2].trim();
+
+  try {
+    return { message, data: JSON.parse(jsonStr) };
+  } catch {
+    return { message: response, data: null };
+  }
+};
+
+const parseResponse = (response: string): ParsedResponse => {
+  const { evaluation, remaining } = extractEvaluation(response);
+  const { message, data } = extractData(remaining);
   return { message, data, evaluation };
 };
 
@@ -110,17 +113,18 @@ export const query = async (req: Request, res: Response) => {
 
     const [shouldRoute, result] = await frontlineProcess(query, conversation);
 
-    let response: string;
-    let routedToOrchestrator = false;
+    const routedToOrchestrator = shouldRoute;
 
     if (!shouldRoute) {
       console.log('[AI Controller] Frontline handled directly');
-      response = result;
-    } else {
-      console.log('[AI Controller] Routing to orchestrator');
-      routedToOrchestrator = true;
-      response = await orchestratorProcess(query, conversation);
     }
+    if (shouldRoute) {
+      console.log('[AI Controller] Routing to orchestrator');
+    }
+
+    const response = shouldRoute
+      ? await orchestratorProcess(query, conversation)
+      : result;
 
     conversation.push({ role: 'assistant', content: response });
 
@@ -139,17 +143,16 @@ export const query = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('[AI Controller] Error:', error);
 
-    let errorMsg: string;
-    let errorDetails: unknown = null;
+    const isZodError = error && typeof error === 'object' && 'issues' in error;
 
-    if (error && typeof error === 'object' && 'issues' in error) {
-      // ZodError - format nicely
-      const zodError = error as { issues: Array<{ path: string[]; message: string }> };
-      errorMsg = zodError.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
-      errorDetails = zodError.issues;
-    } else {
-      errorMsg = error instanceof Error ? error.message : String(error);
-    }
+    const errorDetails = isZodError
+      ? (error as { issues: Array<{ path: string[]; message: string }> }).issues
+      : null;
+
+    const errorMsg = isZodError
+      ? (error as { issues: Array<{ path: string[]; message: string }> }).issues
+          .map(i => `${i.path.join('.')}: ${i.message}`).join('; ')
+      : error instanceof Error ? error.message : String(error);
 
     res.status(500).json({
       success: false,
@@ -163,10 +166,11 @@ export const query = async (req: Request, res: Response) => {
 export const clearSession = (req: Request, res: Response) => {
   const { sessionId } = req.params;
 
-  if (sessions.has(sessionId)) {
-    sessions.delete(sessionId);
-    res.json({ success: true, message: `Session ${sessionId} cleared` });
-  } else {
+  if (!sessions.has(sessionId)) {
     res.status(404).json({ success: false, error: 'Session not found' });
+    return;
   }
+
+  sessions.delete(sessionId);
+  res.json({ success: true, message: `Session ${sessionId} cleared` });
 };

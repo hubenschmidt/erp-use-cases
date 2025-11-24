@@ -64,29 +64,32 @@ const formatDataAsText = (data: unknown): string => {
   return String(data);
 };
 
-const formatObject = (obj: Record<string, unknown>): string => {
-  const lines: string[] = [];
-
-  for (const [key, value] of Object.entries(obj)) {
-    const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-
-    if (Array.isArray(value)) {
-      if (value.length > 0 && typeof value[0] === 'object') {
-        lines.push(`\n${label}:`);
-        value.forEach((item, i) => {
-          lines.push(`  ${i + 1}. ${formatObject(item as Record<string, unknown>)}`);
-        });
-      } else {
-        lines.push(`${label}: ${value.join(', ')}`);
-      }
-    } else if (typeof value === 'object' && value !== null) {
-      lines.push(`${label}: ${formatObject(value as Record<string, unknown>)}`);
-    } else {
-      lines.push(`${label}: ${value}`);
-    }
+const formatValue = (label: string, value: unknown): string[] => {
+  if (Array.isArray(value) && value.length > 0 && typeof value[0] === 'object') {
+    return [
+      `\n${label}:`,
+      ...value.map((item, i) => `  ${i + 1}. ${formatObject(item as Record<string, unknown>)}`),
+    ];
   }
 
-  return lines.join('\n');
+  if (Array.isArray(value)) {
+    return [`${label}: ${value.join(', ')}`];
+  }
+
+  if (typeof value === 'object' && value !== null) {
+    return [`${label}: ${formatObject(value as Record<string, unknown>)}`];
+  }
+
+  return [`${label}: ${value}`];
+};
+
+const formatObject = (obj: Record<string, unknown>): string => {
+  return Object.entries(obj)
+    .flatMap(([key, value]) => {
+      const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      return formatValue(label, value);
+    })
+    .join('\n');
 };
 
 export const handleChat = async (

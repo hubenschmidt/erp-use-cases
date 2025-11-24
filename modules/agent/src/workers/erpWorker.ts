@@ -17,72 +17,44 @@ interface ERPOperation {
   explanation: string;
 }
 
+type OperationHandler = (parameters: Record<string, unknown>) => unknown;
+
+const operationHandlers: Record<string, OperationHandler> = {
+  GET_STOCK: (p) => p.sku
+    ? inventoryService.getStockBySku(p.sku as string)
+    : inventoryService.getStock(p.location as string | undefined),
+  GET_LOW_STOCK: () => inventoryService.getLowStockAlerts(),
+  GET_DEAD_STOCK: (p) => inventoryService.getDeadStock(p.days as number | undefined),
+  TRANSFER_STOCK: (p) => inventoryService.transferStock(
+    p.sku as string,
+    p.from as string,
+    p.to as string,
+    p.qty as number
+  ),
+  GET_LOCATIONS: () => inventoryService.getLocations(),
+  GET_ORDERS: (p) => orderService.getOrders(
+    p.status as string | undefined,
+    p.customer_id as string | undefined
+  ),
+  GET_ORDER_DETAIL: (p) => orderService.getOrderDetail(p.order_id as string),
+  CREATE_ORDER: (p) => orderService.createOrder(
+    p.customer_id as string,
+    p.items as { sku: string; qty: number; unit_price: number; location: string }[]
+  ),
+  UPDATE_ORDER_STATUS: (p) => orderService.updateOrderStatus(
+    p.order_id as string,
+    p.status as string
+  ),
+  GET_ORDER_SUMMARY: () => orderService.getOrderSummary(),
+  GET_CUSTOMERS: () => orderService.getCustomers(),
+};
+
 const executeOperation = (op: ERPOperation): unknown => {
-  const { operation, parameters } = op;
-
-  switch (operation) {
-    case "GET_STOCK":
-      if (parameters.sku) {
-        return inventoryService.getStockBySku(parameters.sku as string);
-      }
-      return inventoryService.getStock(
-        parameters.location as string | undefined
-      );
-
-    case "GET_LOW_STOCK":
-      return inventoryService.getLowStockAlerts();
-
-    case "GET_DEAD_STOCK":
-      return inventoryService.getDeadStock(
-        parameters.days as number | undefined
-      );
-
-    case "TRANSFER_STOCK":
-      return inventoryService.transferStock(
-        parameters.sku as string,
-        parameters.from as string,
-        parameters.to as string,
-        parameters.qty as number
-      );
-
-    case "GET_LOCATIONS":
-      return inventoryService.getLocations();
-
-    case "GET_ORDERS":
-      return orderService.getOrders(
-        parameters.status as string | undefined,
-        parameters.customer_id as string | undefined
-      );
-
-    case "GET_ORDER_DETAIL":
-      return orderService.getOrderDetail(parameters.order_id as string);
-
-    case "CREATE_ORDER":
-      return orderService.createOrder(
-        parameters.customer_id as string,
-        parameters.items as {
-          sku: string;
-          qty: number;
-          unit_price: number;
-          location: string;
-        }[]
-      );
-
-    case "UPDATE_ORDER_STATUS":
-      return orderService.updateOrderStatus(
-        parameters.order_id as string,
-        parameters.status as string
-      );
-
-    case "GET_ORDER_SUMMARY":
-      return orderService.getOrderSummary();
-
-    case "GET_CUSTOMERS":
-      return orderService.getCustomers();
-
-    default:
-      return { error: `Unknown operation: ${operation}` };
+  const handler = operationHandlers[op.operation];
+  if (!handler) {
+    return { error: `Unknown operation: ${op.operation}` };
   }
+  return handler(op.parameters);
 };
 
 export const executeErp = async (

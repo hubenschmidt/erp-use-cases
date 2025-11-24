@@ -91,30 +91,28 @@ export const getDeadStock = (daysThreshold: number = 90) => {
   cutoff.setDate(cutoff.getDate() - daysThreshold);
 
   const stock = inventoryRepo.getAllStock();
-  const deadItems: Record<string, unknown>[] = [];
 
-  for (const s of stock) {
-    const lastMove = new Date(s.last_movement);
-    if (lastMove >= cutoff) continue;
-    if (s.qty_on_hand <= 0) continue;
+  return stock
+    .filter((s) => {
+      const lastMove = new Date(s.last_movement);
+      return lastMove < cutoff && s.qty_on_hand > 0;
+    })
+    .map((s) => {
+      const lastMove = new Date(s.last_movement);
+      const daysSinceMovement = Math.floor(
+        (Date.now() - lastMove.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      const product = productRepo.findProductBySku(s.sku);
+      const unitCost = product?.unit_cost ?? 0;
+      const carryingCost = s.qty_on_hand * unitCost * 0.25 * (daysSinceMovement / 365);
 
-    const daysSinceMovement = Math.floor(
-      (Date.now() - lastMove.getTime()) / (1000 * 60 * 60 * 24)
-    );
-    const product = productRepo.findProductBySku(s.sku);
-    const unitCost = product?.unit_cost ?? 0;
-    const carryingCost = s.qty_on_hand * unitCost * 0.25 * (daysSinceMovement / 365);
-
-    deadItems.push({
-      ...s,
-      days_since_movement: daysSinceMovement,
-      estimated_carrying_cost: Math.round(carryingCost * 100) / 100,
-    });
-  }
-
-  return deadItems.sort(
-    (a, b) => (b.days_since_movement as number) - (a.days_since_movement as number)
-  );
+      return {
+        ...s,
+        days_since_movement: daysSinceMovement,
+        estimated_carrying_cost: Math.round(carryingCost * 100) / 100,
+      };
+    })
+    .sort((a, b) => b.days_since_movement - a.days_since_movement);
 };
 
 /**
@@ -146,12 +144,7 @@ export const transferStock = (
   });
 
   const toItem = inventoryRepo.findStockItem(sku, toLocation);
-  if (toItem) {
-    inventoryRepo.updateStockItem(sku, toLocation, {
-      qty_on_hand: toItem.qty_on_hand + qty,
-      last_movement: today,
-    });
-  } else {
+  if (!toItem) {
     inventoryRepo.appendStockItem({
       sku,
       product_name: fromItem.product_name,
@@ -159,6 +152,12 @@ export const transferStock = (
       qty_on_hand: qty,
       qty_reserved: 0,
       reorder_point: fromItem.reorder_point,
+      last_movement: today,
+    });
+  }
+  if (toItem) {
+    inventoryRepo.updateStockItem(sku, toLocation, {
+      qty_on_hand: toItem.qty_on_hand + qty,
       last_movement: today,
     });
   }
