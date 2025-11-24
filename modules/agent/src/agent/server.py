@@ -10,8 +10,10 @@ import logging
 from datetime import datetime
 
 from fastapi import FastAPI, WebSocket
+
 from agent.runner import handle_chat
 from agent.logging_config import configure_logging
+from agent.mocks.controllers import inventory_router, order_router, report_router
 
 # -----------------------------------------------------------------------------
 # App + logging
@@ -19,6 +21,11 @@ from agent.logging_config import configure_logging
 configure_logging()  # plain logging to stdout (Docker captures it)
 logger = logging.getLogger("app.server")
 app = FastAPI()
+
+# Register routers
+app.include_router(inventory_router)
+app.include_router(order_router)
+app.include_router(report_router)
 
 
 # -----------------------------------------------------------------------------
