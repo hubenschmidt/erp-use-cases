@@ -2,6 +2,7 @@ import { WorkerResult, WorkerType } from '../models.js';
 import { executeSearch } from './searchWorker.js';
 import { executeEmail } from './emailWorker.js';
 import { executeGeneral } from './generalWorker.js';
+import { executeErp } from './erpWorker.js';
 
 type WorkerFn = (
   taskDescription: string,
@@ -13,6 +14,7 @@ const workerRegistry = new Map<WorkerType, WorkerFn>([
   [WorkerType.SEARCH, executeSearch],
   [WorkerType.EMAIL, executeEmail],
   [WorkerType.GENERAL, executeGeneral],
+  [WorkerType.ERP, executeErp],
 ]);
 
 export const executeWorker = async (

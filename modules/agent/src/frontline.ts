@@ -1,13 +1,12 @@
-import { createAgent } from './lib/agent.js';
-import { Message } from './models.js';
-import { FRONTLINE_SYSTEM_PROMPT } from './prompts/frontline.js';
-
-const model = globalThis.process?.env?.OPENAI_MODEL ?? 'gpt-4o';
+import { createAgent } from "./lib/agent.js";
+import { Message } from "./models.js";
+import { FRONTLINE_SYSTEM_PROMPT } from "./prompts/frontline.js";
+import { models } from "./llm-models/index.js";
 
 const agent = createAgent({
-  name: 'Frontline',
+  name: "Frontline",
   instructions: FRONTLINE_SYSTEM_PROMPT,
-  model,
+  model: models.frontline,
 });
 
 interface FrontlineDecision {
@@ -20,13 +19,13 @@ export const process = async (
   userInput: string,
   conversationHistory: Message[]
 ): Promise<[boolean, string]> => {
-  console.log('⚡ FRONTLINE: Processing request');
+  console.log("⚡ FRONTLINE: Processing request");
   console.log(`   Input: ${userInput.slice(0, 80)}...`);
 
   const recent = conversationHistory.slice(-4);
   const historyContext = recent
     .map((m) => `${m.role.toUpperCase()}: ${m.content}`)
-    .join('\n');
+    .join("\n");
 
   const context = `Recent conversation:
 ${historyContext}
@@ -47,9 +46,9 @@ const parseDecision = (
 ): [boolean, string] => {
   let text = responseText;
 
-  if (text.startsWith('```')) {
-    text = text.split('```')[1];
-    if (text.startsWith('json')) {
+  if (text.startsWith("```")) {
+    text = text.split("```")[1];
+    if (text.startsWith("json")) {
       text = text.slice(4);
     }
   }
@@ -58,15 +57,15 @@ const parseDecision = (
     const decision: FrontlineDecision = JSON.parse(text);
 
     if (decision.route_to_orchestrator) {
-      const reason = decision.reason ?? 'Specialized task detected';
+      const reason = decision.reason ?? "Specialized task detected";
       console.log(`→ FRONTLINE: Routing to orchestrator (${reason})`);
       return [true, reason];
     }
 
-    console.log('✓ FRONTLINE: Handled directly');
-    return [false, decision.response ?? ''];
+    console.log("✓ FRONTLINE: Handled directly");
+    return [false, decision.response ?? ""];
   } catch {
-    console.warn('⚠️  FRONTLINE: Failed to parse response, handling as direct');
+    console.warn("⚠️  FRONTLINE: Failed to parse response, handling as direct");
     return [false, fallback];
   }
 };

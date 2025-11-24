@@ -1,11 +1,12 @@
 import { createAgent } from '../lib/agent.js';
 import { WorkerResult } from '../models.js';
 import { GENERAL_WORKER_PROMPT } from '../prompts/workers/general.js';
+import { models } from '../llm-models/index.js';
 
 const agent = createAgent({
   name: 'GeneralWorker',
   instructions: GENERAL_WORKER_PROMPT,
-  model: process.env.OPENAI_MODEL ?? 'gpt-4o-mini',
+  model: models.workers.general,
 });
 
 export const executeGeneral = async (

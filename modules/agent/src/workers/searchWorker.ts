@@ -2,13 +2,14 @@ import { getJson } from 'serpapi';
 import { createAgent } from '../lib/agent.js';
 import { WorkerResult } from '../models.js';
 import { SEARCH_WORKER_PROMPT } from '../prompts/workers/search.js';
+import { models } from '../llm-models/index.js';
 
 const apiKey = process.env.SERPAPI_KEY ?? '';
 
 const agent = createAgent({
   name: 'SearchWorker',
   instructions: SEARCH_WORKER_PROMPT,
-  model: process.env.OPENAI_MODEL ?? 'gpt-4o-mini',
+  model: models.workers.search,
 });
 
 interface SearchResult {

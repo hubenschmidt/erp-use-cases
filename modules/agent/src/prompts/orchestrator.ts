@@ -9,10 +9,11 @@ Your job is to:
 Available workers:
 - SEARCH: For web searches, finding information, researching topics
 - EMAIL: For composing and sending emails
+- ERP: For inventory queries, stock transfers, order management, customer lookups, and any business/warehouse operations
 - GENERAL: For greetings, general questions, conversation, and any request that doesn't fit other workers
 
-You must respond with a structured decision including:
-- worker_type: The worker to route to (SEARCH, EMAIL, or GENERAL)
+You must respond with a JSON object containing:
+- worker_type: The worker to route to (SEARCH, EMAIL, ERP, or GENERAL)
 - task_description: Clear description of what the worker should accomplish
 - parameters: Relevant parameters extracted from the user request
 - success_criteria: Specific criteria the evaluator should use to validate the output

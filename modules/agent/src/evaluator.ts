@@ -1,11 +1,12 @@
-import { createAgent } from './lib/agent.js';
-import { EvaluatorResult, evaluatorResultSchema } from './models.js';
-import { EVALUATOR_SYSTEM_PROMPT } from './prompts/evaluator.js';
+import { createAgent } from "./lib/agent.js";
+import { EvaluatorResult, evaluatorResultSchema } from "./models.js";
+import { EVALUATOR_SYSTEM_PROMPT } from "./prompts/evaluator.js";
+import { models } from "./llm-models/index.js";
 
 const agent = createAgent<EvaluatorResult>({
-  name: 'Evaluator',
+  name: "Evaluator",
   instructions: EVALUATOR_SYSTEM_PROMPT,
-  model: process.env.OPENAI_MODEL ?? 'gpt-4o-mini',
+  model: models.evaluator,
   outputSchema: evaluatorResultSchema,
 });
 
@@ -14,7 +15,7 @@ export const evaluate = async (
   taskDescription: string,
   successCriteria: string
 ): Promise<EvaluatorResult> => {
-  console.log('🔍 EVALUATOR: Starting evaluation');
+  console.log("🔍 EVALUATOR: Starting evaluation");
   console.log(`   Criteria: ${successCriteria.slice(0, 80)}...`);
 
   const context = `Task Description: ${taskDescription}
@@ -29,8 +30,10 @@ Evaluate this output against the success criteria and provide your assessment.`;
   const result = await agent.run(context);
   const evalResult = result.finalOutput;
 
-  const status = evalResult.passed ? 'PASS' : 'FAIL';
-  console.log(`🔍 EVALUATOR: Result = ${status} (score: ${evalResult.score}/100)`);
+  const status = evalResult.passed ? "PASS" : "FAIL";
+  console.log(
+    `🔍 EVALUATOR: Result = ${status} (score: ${evalResult.score}/100)`
+  );
 
   return evalResult;
 };

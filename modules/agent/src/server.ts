@@ -5,6 +5,7 @@ import { handleChat } from './runner.js';
 import { inventoryRouter } from './mocks/controllers/inventoryController.js';
 import { orderRouter } from './mocks/controllers/orderController.js';
 import { reportRouter } from './mocks/controllers/reportController.js';
+import { aiRouter } from './mocks/controllers/aiController.js';
 
 const app = express();
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use('/api', inventoryRouter);
 app.use('/api', orderRouter);
 app.use('/api', reportRouter);
+app.use('/api', aiRouter);
 
 const server = createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
