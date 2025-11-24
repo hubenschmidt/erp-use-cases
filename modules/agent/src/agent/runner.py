@@ -10,6 +10,7 @@ from typing import Dict, List
 from dotenv import load_dotenv
 from fastapi import WebSocket
 
+from agent.frontline import Frontline
 from agent.orchestrator import Orchestrator
 
 # -----------------------------------------------------------------------------
@@ -27,6 +28,7 @@ if not API_KEY:
 # -----------------------------------------------------------------------------
 _conversations: Dict[str, List[Dict[str, str]]] = {}
 _orchestrator: Orchestrator | None = None
+_frontline: Frontline | None = None
 
 
 def get_conversation(user_uuid: str) -> List[Dict[str, str]]:
@@ -42,6 +44,14 @@ def get_orchestrator() -> Orchestrator:
     if _orchestrator is None:
         _orchestrator = Orchestrator()
     return _orchestrator
+
+
+def get_frontline() -> Frontline:
+    """Get or create the frontline instance."""
+    global _frontline
+    if _frontline is None:
+        _frontline = Frontline()
+    return _frontline
 
 
 def _extract_user_input(data: str | List[Dict[str, str]]) -> str:
@@ -83,28 +93,34 @@ async def handle_chat(
 
     logger.info(f"Processing message: {user_input[:50]}")
 
+    frontline = get_frontline()
     orchestrator = get_orchestrator()
     conversation = get_conversation(user_uuid)
     conversation.append({"role": "user", "content": user_input})
 
     try:
-        logger.info("Starting orchestrator processing")
+        should_route, result = await frontline.process(user_input, conversation)
 
-        await websocket.send_text(
-            json.dumps({"on_chat_model_stream": "Processing your request..."})
-        )
+        if should_route:
+            logger.info("Routing to orchestrator for specialized processing")
+            await websocket.send_text(
+                json.dumps({"on_chat_model_stream": "Processing your request..."})
+            )
 
-        response = await orchestrator.process(user_input, conversation)
+            response = await orchestrator.process(user_input, conversation)
 
-        await websocket.send_text(json.dumps({"on_chat_model_stream": "\n\n"}))
-        await websocket.send_text(json.dumps({"on_chat_model_stream": response}))
+            await websocket.send_text(json.dumps({"on_chat_model_stream": "\n\n"}))
+            await websocket.send_text(json.dumps({"on_chat_model_stream": response}))
+        else:
+            logger.info("Frontline handled directly")
+            response = result
+            await websocket.send_text(json.dumps({"on_chat_model_stream": response}))
+
         await websocket.send_text(json.dumps({"on_chat_model_end": True}))
-
         conversation.append({"role": "assistant", "content": response})
-        logger.info("Orchestrator processing complete")
 
     except Exception as e:
-        logger.exception(f"Orchestrator run failed: {e}")
+        logger.exception(f"Agent run failed: {e}")
         error_msg = "Sorry—there was an error generating the response."
         await websocket.send_text(
             json.dumps({"on_chat_model_stream": error_msg})
