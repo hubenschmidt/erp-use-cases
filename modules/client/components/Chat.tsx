@@ -37,7 +37,7 @@ const Chat = () => {
           className={`status ${isOpen ? "status--online" : "status--offline"}`}
           title={isOpen ? "Connected" : "Disconnected"}
         />
-        <b className="title">LangGraph-React</b>
+        <b className="title">openai-agents-sdk</b>
       </header>
 
       <main className="chat-card">

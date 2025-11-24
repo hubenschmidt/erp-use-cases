@@ -1,8 +1,8 @@
-"""New LangGraph Agent.
+"""OpenAI Agents SDK Agent.
 
-This module defines a custom graph.
+This module defines the agent runner.
 """
 
-from agent.graph import graph
+from agent.runner import handle_chat
 
-__all__ = ["graph"]
+__all__ = ["handle_chat"]

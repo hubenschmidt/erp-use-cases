@@ -10,7 +10,7 @@ import logging
 from datetime import datetime
 
 from fastapi import FastAPI, WebSocket
-from agent.graph import invoke_our_graph
+from agent.runner import handle_chat
 from agent.logging_config import configure_logging
 
 # -----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ async def websocket_endpoint(websocket: WebSocket):
             return new_uid
 
         # We have a message: invoke the graph (it streams back over this WS)
-        await invoke_our_graph(websocket, message, new_uid)
+        await handle_chat(websocket, message, new_uid)
         return new_uid
 
     try:

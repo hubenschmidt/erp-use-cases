@@ -1,7 +1,7 @@
 [project]
-name = "langgraph-react"
+name = "openai-agents-react"
 version = "1.0.0"
-description = "Starter template for making a new agent LangGraph with React."
+description = "Agent backend using OpenAI Agents SDK with React frontend."
 authors = [
     { name = "William Hubenschmidt", email = "whubenschmidt@gmail.com" },
 ]
@@ -9,9 +9,8 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
-  "langgraph>=1.0,<2",
+  "openai-agents>=0.0.3",
   "python-dotenv>=1.0,<2",
-  "langfuse>=3,<4",
   "openai>=2.6.0,<3",
   "fastapi>=0.119.1,<1",
   "uvicorn>=0.38,<1",
@@ -27,9 +26,8 @@ requires = ["setuptools>=73.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["langgraph.templates.agent", "agent"]
+packages = ["agent"]
 [tool.setuptools.package-dir]
-"langgraph.templates.agent" = "src/agent"
 "agent" = "src/agent"
 
 
@@ -63,7 +61,6 @@ convention = "google"
 [dependency-groups]
 dev = [
     "anyio>=4.7.0",
-    "langgraph-cli[inmem]>=0.4.4,<1",
     "mypy>=1.13.0",
     "pytest>=8.3.5",
     "ruff>=0.8.2",

@@ -31,5 +31,5 @@ COPY start.sh /usr/src/app/start.sh
 # Give execution permissions to the start.sh script
 RUN chmod +x /usr/src/app/start.sh
 
-EXPOSE 2024 8000
+EXPOSE 8000
 CMD ["/usr/src/app/start.sh"]
