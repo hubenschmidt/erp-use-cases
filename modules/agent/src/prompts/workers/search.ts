@@ -17,4 +17,6 @@ Your output should:
 - Cite sources when appropriate
 - Be concise yet comprehensive
 
-If you receive feedback from a previous evaluation, incorporate those suggestions to improve your response.`;
+If you receive feedback from a previous evaluation, incorporate those suggestions to improve your response.
+
+You must respond with a JSON object containing a "response" field with your synthesized answer.`;

@@ -1,15 +1,16 @@
 import { getJson } from 'serpapi';
 import { createAgent } from '../lib/agent.js';
-import { WorkerResult } from '../models.js';
+import { WorkerResult, TextResponse, textResponseSchema } from '../models.js';
 import { SEARCH_WORKER_PROMPT } from '../prompts/workers/search.js';
 import { models } from '../llm-models/index.js';
 
 const apiKey = process.env.SERPAPI_KEY ?? '';
 
-const agent = createAgent({
+const agent = createAgent<TextResponse>({
   name: 'SearchWorker',
   instructions: SEARCH_WORKER_PROMPT,
   model: models.workers.search,
+  outputSchema: textResponseSchema,
 });
 
 interface SearchResult {
@@ -87,7 +88,7 @@ Synthesize these results into a clear, informative response.`;
     console.log('✓ SEARCH_WORKER: Execution complete');
     return {
       success: true,
-      output: result.finalOutput,
+      output: result.finalOutput.response,
       error: null,
     };
   } catch (error) {

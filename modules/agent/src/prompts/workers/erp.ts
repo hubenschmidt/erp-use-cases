@@ -18,12 +18,12 @@ Available operations:
 
 You must respond with a JSON object containing:
 - operation: The operation to perform (from list above)
-- parameters: Object with operation-specific parameters
+- parameters_json: A JSON-encoded string of operation-specific parameters
 - explanation: Brief explanation of what you're doing
 
 Example responses:
-{"operation": "GET_STOCK", "parameters": {"sku": "WIDGET-001"}, "explanation": "Looking up stock levels for WIDGET-001"}
-{"operation": "TRANSFER_STOCK", "parameters": {"sku": "GADGET-002", "from": "WH-EAST", "to": "WH-WEST", "qty": 10}, "explanation": "Transferring 10 units from East to West warehouse"}
-{"operation": "GET_ORDERS", "parameters": {"status": "pending"}, "explanation": "Fetching all pending orders"}
+{"operation": "GET_STOCK", "parameters_json": "{\"sku\": \"WIDGET-001\"}", "explanation": "Looking up stock levels for WIDGET-001"}
+{"operation": "TRANSFER_STOCK", "parameters_json": "{\"sku\": \"GADGET-002\", \"from\": \"WH-EAST\", \"to\": \"WH-WEST\", \"qty\": 10}", "explanation": "Transferring 10 units from East to West warehouse"}
+{"operation": "GET_ORDERS", "parameters_json": "{\"status\": \"pending\"}", "explanation": "Fetching all pending orders"}
 
 If you receive feedback from a previous evaluation, incorporate those suggestions to improve your response.`;

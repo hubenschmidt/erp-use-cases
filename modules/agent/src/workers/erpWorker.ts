@@ -1,21 +1,16 @@
 import { createAgent } from "../lib/agent.js";
-import { WorkerResult } from "../models.js";
+import { WorkerResult, ERPOperation, erpOperationSchema } from "../models.js";
 import { ERP_WORKER_PROMPT } from "../prompts/workers/erp.js";
 import * as inventoryService from "../mocks/services/inventoryService.js";
 import * as orderService from "../mocks/services/orderService.js";
 import { models } from "../llm-models/index.js";
 
-const agent = createAgent({
+const agent = createAgent<ERPOperation>({
   name: "ERPWorker",
   instructions: ERP_WORKER_PROMPT,
   model: models.workers.erp,
+  outputSchema: erpOperationSchema,
 });
-
-interface ERPOperation {
-  operation: string;
-  parameters: Record<string, unknown>;
-  explanation: string;
-}
 
 type OperationHandler = (parameters: Record<string, unknown>) => unknown;
 
@@ -54,7 +49,8 @@ const executeOperation = (op: ERPOperation): unknown => {
   if (!handler) {
     return { error: `Unknown operation: ${op.operation}` };
   }
-  return handler(op.parameters);
+  const parameters = JSON.parse(op.parameters_json || '{}');
+  return handler(parameters);
 };
 
 export const executeErp = async (
@@ -80,27 +76,7 @@ Determine the appropriate ERP operation and execute it.`;
     }
 
     const result = await agent.run(context);
-    const responseText = result.finalOutput.trim();
-
-    // Parse the operation from agent response
-    let operation: ERPOperation;
-    try {
-      let text = responseText;
-      if (text.startsWith("```")) {
-        text = text.split("```")[1];
-        if (text.startsWith("json")) {
-          text = text.slice(4);
-        }
-      }
-      operation = JSON.parse(text);
-    } catch {
-      console.error("❌ ERP_WORKER: Failed to parse agent response");
-      return {
-        success: false,
-        output: "",
-        error: `Failed to parse operation: ${responseText}`,
-      };
-    }
+    const operation = result.finalOutput;
 
     console.log(`🏭 ERP_WORKER: Executing ${operation.operation}`);
     console.log(`   Explanation: ${operation.explanation}`);

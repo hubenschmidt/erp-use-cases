@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { WebSocket } from 'ws';
-import { Message } from './models.js';
+import { Message, OrchestratorResponse } from './models.js';
 import { process as frontlineProcess } from './frontline.js';
 import { process as orchestratorProcess } from './orchestrator.js';
 
@@ -31,24 +31,12 @@ const extractUserInput = (data: string | Message[]): string => {
   return userMessages[userMessages.length - 1].content;
 };
 
-const formatForChat = (response: string): string => {
-  // Remove evaluation metadata
-  let text = response.replace(/\n\n\[Evaluation:.*?\]\n\[Criteria:.*?\]\n\[Feedback:.*?\]$/s, '');
-
-  // Parse out JSON and convert to readable text
-  const resultMatch = text.match(/^(.*?)\n\nResult:\n(.+)$/s);
-  if (!resultMatch) {
-    return text;
+const formatForChat = (response: OrchestratorResponse): string => {
+  if (!response.data) {
+    return response.message;
   }
 
-  const [, message, jsonStr] = resultMatch;
-
-  try {
-    const data = JSON.parse(jsonStr);
-    return `${message}\n\n${formatDataAsText(data)}`;
-  } catch {
-    return text;
-  }
+  return `${response.message}\n\n${formatDataAsText(response.data)}`;
 };
 
 const formatDataAsText = (data: unknown): string => {

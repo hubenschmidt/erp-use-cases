@@ -2,6 +2,7 @@ import { createAgent } from "./lib/agent.js";
 import {
   Message,
   OrchestratorDecision,
+  OrchestratorResponse,
   WorkerType,
   orchestratorDecisionSchema,
 } from "./models.js";
@@ -22,7 +23,7 @@ const agent = createAgent<OrchestratorDecision>({
 export const process = async (
   userInput: string,
   conversationHistory: Message[]
-): Promise<string> => {
+): Promise<OrchestratorResponse> => {
   console.log("=".repeat(50));
   console.log("▶️  ORCHESTRATOR: Starting request processing");
   console.log(`   User input: ${userInput.slice(0, 100)}...`);
@@ -37,15 +38,35 @@ export const process = async (
 
   if (decision.worker_type === WorkerType.NONE) {
     console.warn("⚠️  ORCHESTRATOR: No suitable worker found");
-    return `I'm unable to help with that request. ${decision.task_description}`;
+    return {
+      message: `I'm unable to help with that request. ${decision.task_description}`,
+      data: null,
+      evaluation: null,
+    };
   }
 
   return executeWithEvaluation(decision);
 };
 
+const parseWorkerOutput = (output: string): { message: string; data: unknown | null } => {
+  const resultMatch = output.match(/^(.*?)\n\nResult:\n(.+)$/s);
+  if (!resultMatch) {
+    return { message: output, data: null };
+  }
+
+  const message = resultMatch[1].trim();
+  const jsonStr = resultMatch[2].trim();
+
+  try {
+    return { message, data: JSON.parse(jsonStr) };
+  } catch {
+    return { message: output, data: null };
+  }
+};
+
 const executeWithEvaluation = async (
   decision: OrchestratorDecision
-): Promise<string> => {
+): Promise<OrchestratorResponse> => {
   let feedback: string | undefined;
   let workerResult = {
     success: false,
@@ -57,17 +78,22 @@ const executeWithEvaluation = async (
     console.log(`🔄 ORCHESTRATOR: Attempt ${attempt + 1}/${MAX_RETRIES}`);
 
     const workerStart = Date.now();
+    const parameters = JSON.parse(decision.parameters_json || '{}');
     workerResult = await executeWorker(
       decision.worker_type as WorkerType,
       decision.task_description,
-      decision.parameters,
+      parameters,
       feedback
     );
     const workerDuration = Date.now() - workerStart;
 
     if (!workerResult.success) {
       console.error(`❌ WORKER: Failed with error: ${workerResult.error}`);
-      return `Error: ${workerResult.error}`;
+      return {
+        message: `Error: ${workerResult.error}`,
+        data: null,
+        evaluation: null,
+      };
     }
 
     console.log(`✓ WORKER: Completed successfully (${workerDuration}ms)`);
@@ -89,11 +115,7 @@ const executeWithEvaluation = async (
 
     if (evalResult.passed) {
       console.log("=".repeat(50));
-      return formatResponse(
-        workerResult.output,
-        decision.success_criteria,
-        evalResult
-      );
+      return buildResponse(workerResult.output, decision.success_criteria, evalResult, false);
     }
 
     feedback = `${evalResult.feedback}\n\nSuggestions: ${evalResult.suggestions}`;
@@ -103,30 +125,33 @@ const executeWithEvaluation = async (
         "⚠️  ORCHESTRATOR: Max retries reached, returning partial result"
       );
       console.log("=".repeat(50));
-      return formatResponse(
-        workerResult.output,
-        decision.success_criteria,
-        evalResult,
-        true
-      );
+      return buildResponse(workerResult.output, decision.success_criteria, evalResult, true);
     }
   }
 
-  return workerResult.output;
+  const { message, data } = parseWorkerOutput(workerResult.output);
+  return { message, data, evaluation: null };
 };
 
-const formatResponse = (
+const buildResponse = (
   output: string,
   successCriteria: string,
   evalResult: { passed: boolean; score: number; feedback: string },
-  maxRetriesReached = false
-): string => {
-  const status = maxRetriesReached
-    ? "partial"
-    : evalResult.passed
-    ? "passed"
-    : "failed";
-  return `${output}\n\n[Evaluation: ${status} | Score: ${evalResult.score}/100]\n[Criteria: ${successCriteria}]\n[Feedback: ${evalResult.feedback}]`;
+  maxRetriesReached: boolean
+): OrchestratorResponse => {
+  const { message, data } = parseWorkerOutput(output);
+  const status = maxRetriesReached ? "partial" : evalResult.passed ? "passed" : "failed";
+
+  return {
+    message,
+    data,
+    evaluation: {
+      status,
+      score: evalResult.score,
+      criteria: successCriteria,
+      feedback: evalResult.feedback,
+    },
+  };
 };
 
 const route = async (

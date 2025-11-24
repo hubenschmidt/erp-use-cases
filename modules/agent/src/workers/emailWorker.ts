@@ -1,6 +1,6 @@
 import sgMail from "@sendgrid/mail";
 import { createAgent } from "../lib/agent.js";
-import { WorkerResult } from "../models.js";
+import { WorkerResult, EmailComposition, emailCompositionSchema } from "../models.js";
 import { EMAIL_WORKER_PROMPT } from "../prompts/workers/email.js";
 import { models } from "../llm-models/index.js";
 
@@ -11,10 +11,11 @@ if (apiKey) {
   sgMail.setApiKey(apiKey);
 }
 
-const agent = createAgent({
+const agent = createAgent<EmailComposition>({
   name: "EmailWorker",
   instructions: EMAIL_WORKER_PROMPT,
   model: models.workers.email,
+  outputSchema: emailCompositionSchema,
 });
 
 interface SendResult {
@@ -75,13 +76,14 @@ Parameters provided:
 
 ${feedbackSection}
 
-Compose the email and confirm it's ready to send. Return a JSON with to, subject, and body fields.`;
+Compose the email with to, subject, and body fields.`;
 
     const result = await agent.run(context);
+    const email = result.finalOutput;
 
-    const to = (parameters.to as string) ?? "";
-    const subject = (parameters.subject as string) ?? "";
-    const body = (parameters.body as string) ?? result.finalOutput;
+    const to = email.to || (parameters.to as string) || "";
+    const subject = email.subject || (parameters.subject as string) || "";
+    const body = email.body || (parameters.body as string) || "";
 
     console.log(`📧 EMAIL_WORKER: Sending to ${to}`);
     const sendResult = await sendEmail(to, subject, body);

@@ -15,7 +15,7 @@ Available workers:
 You must respond with a JSON object containing:
 - worker_type: The worker to route to (SEARCH, EMAIL, ERP, or GENERAL)
 - task_description: Clear description of what the worker should accomplish
-- parameters: Relevant parameters extracted from the user request
+- parameters_json: A JSON-encoded string of parameters (e.g., "{\"sku\": \"WIDGET-001\"}")
 - success_criteria: Specific criteria the evaluator should use to validate the output
 
 If the request doesn't match any available worker, respond with worker_type: NONE and explain why in task_description.`;

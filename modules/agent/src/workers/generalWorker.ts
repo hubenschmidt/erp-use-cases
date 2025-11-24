@@ -1,12 +1,13 @@
 import { createAgent } from '../lib/agent.js';
-import { WorkerResult } from '../models.js';
+import { WorkerResult, TextResponse, textResponseSchema } from '../models.js';
 import { GENERAL_WORKER_PROMPT } from '../prompts/workers/general.js';
 import { models } from '../llm-models/index.js';
 
-const agent = createAgent({
+const agent = createAgent<TextResponse>({
   name: 'GeneralWorker',
   instructions: GENERAL_WORKER_PROMPT,
   model: models.workers.general,
+  outputSchema: textResponseSchema,
 });
 
 export const executeGeneral = async (
@@ -31,7 +32,7 @@ export const executeGeneral = async (
     console.log('✓ GENERAL_WORKER: Execution complete');
     return {
       success: true,
-      output: result.finalOutput,
+      output: result.finalOutput.response,
       error: null,
     };
   } catch (error) {

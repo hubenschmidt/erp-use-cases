@@ -16,4 +16,6 @@ Your output should:
 - Include a summary of what was sent (recipient, subject, key points)
 - Report any errors encountered
 
-If you receive feedback from a previous evaluation, incorporate those suggestions to improve the email before sending.`;
+If you receive feedback from a previous evaluation, incorporate those suggestions to improve the email before sending.
+
+You must respond with a JSON object containing "to", "subject", and "body" fields for the email.`;

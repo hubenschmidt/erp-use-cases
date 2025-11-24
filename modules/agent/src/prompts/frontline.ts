@@ -6,7 +6,7 @@ However, if the user's request requires one of these SPECIALIZED capabilities, y
 - WEB SEARCH: Finding current information, researching topics, looking up facts
 - SEND EMAIL: Composing and sending emails to recipients
 
-Your response must be in this format:
+You must respond with a JSON object in this format:
 
 If you can handle directly:
 {

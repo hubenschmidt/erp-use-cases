@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { z } from 'zod';
+import { zodResponseFormat } from 'openai/helpers/zod';
 
 const openai = new OpenAI();
 
@@ -7,7 +8,7 @@ export interface AgentConfig {
   name: string;
   instructions: string;
   model: string;
-  outputSchema?: z.ZodSchema;
+  outputSchema?: z.ZodObject<z.ZodRawShape>;
 }
 
 export interface AgentResult<T = string> {
@@ -47,14 +48,14 @@ export const createAgent = <T = string>(config: AgentConfig) => {
 
     try {
       if (config.outputSchema) {
-        const response = await openai.chat.completions.create({
+        const response = await openai.beta.chat.completions.parse({
           model: config.model,
           messages,
-          response_format: { type: 'json_object' },
+          response_format: zodResponseFormat(config.outputSchema, `${config.name}_response`),
         });
 
-        const content = response.choices[0]?.message?.content ?? '';
-        const parsed = config.outputSchema.parse(JSON.parse(content)) as T;
+        const parsed = response.choices[0]?.message?.parsed as T;
+        const content = JSON.stringify(parsed);
 
         const duration = Date.now() - startTime;
         log(config.name, 'RESPONSE', {
@@ -65,7 +66,7 @@ export const createAgent = <T = string>(config: AgentConfig) => {
           outputPreview: truncate(content),
         });
 
-        return { finalOutput: parsed, raw: response };
+        return { finalOutput: parsed, raw: response as unknown as OpenAI.Chat.Completions.ChatCompletion };
       }
 
       const response = await openai.chat.completions.create({
