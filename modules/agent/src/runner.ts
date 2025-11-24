@@ -31,6 +31,64 @@ const extractUserInput = (data: string | Message[]): string => {
   return userMessages[userMessages.length - 1].content;
 };
 
+const formatForChat = (response: string): string => {
+  // Remove evaluation metadata
+  let text = response.replace(/\n\n\[Evaluation:.*?\]\n\[Criteria:.*?\]\n\[Feedback:.*?\]$/s, '');
+
+  // Parse out JSON and convert to readable text
+  const resultMatch = text.match(/^(.*?)\n\nResult:\n(.+)$/s);
+  if (!resultMatch) {
+    return text;
+  }
+
+  const [, message, jsonStr] = resultMatch;
+
+  try {
+    const data = JSON.parse(jsonStr);
+    return `${message}\n\n${formatDataAsText(data)}`;
+  } catch {
+    return text;
+  }
+};
+
+const formatDataAsText = (data: unknown): string => {
+  if (Array.isArray(data)) {
+    if (data.length === 0) return 'No results found.';
+    return data.map((item, i) => `${i + 1}. ${formatObject(item)}`).join('\n\n');
+  }
+
+  if (typeof data === 'object' && data !== null) {
+    return formatObject(data as Record<string, unknown>);
+  }
+
+  return String(data);
+};
+
+const formatObject = (obj: Record<string, unknown>): string => {
+  const lines: string[] = [];
+
+  for (const [key, value] of Object.entries(obj)) {
+    const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    if (Array.isArray(value)) {
+      if (value.length > 0 && typeof value[0] === 'object') {
+        lines.push(`\n${label}:`);
+        value.forEach((item, i) => {
+          lines.push(`  ${i + 1}. ${formatObject(item as Record<string, unknown>)}`);
+        });
+      } else {
+        lines.push(`${label}: ${value.join(', ')}`);
+      }
+    } else if (typeof value === 'object' && value !== null) {
+      lines.push(`${label}: ${formatObject(value as Record<string, unknown>)}`);
+    } else {
+      lines.push(`${label}: ${value}`);
+    }
+  }
+
+  return lines.join('\n');
+};
+
 export const handleChat = async (
   websocket: WebSocket,
   data: string | Message[],
@@ -74,11 +132,12 @@ export const handleChat = async (
     send({ on_chat_model_stream: 'Processing your request...' });
 
     const response = await orchestratorProcess(userInput, conversation);
+    const formattedResponse = formatForChat(response);
 
     send({ on_chat_model_stream: '\n\n' });
-    send({ on_chat_model_stream: response });
+    send({ on_chat_model_stream: formattedResponse });
     send({ on_chat_model_end: true });
-    conversation.push({ role: 'assistant', content: response });
+    conversation.push({ role: 'assistant', content: formattedResponse });
   } catch (error) {
     console.error('Agent run failed:', error);
     const errorMsg = 'Sorry—there was an error generating the response.';
