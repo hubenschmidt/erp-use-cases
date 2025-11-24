@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { handleChat } from './runner.js';
-import { inventoryRouter, orderRouter, reportRouter, aiRouter } from './mocks/routes/index.js';
+import { inventoryRouter, orderRouter, reportRouter, aiRouter, forecastRouter } from './mocks/routes/index.js';
 
 const app = express();
 app.use(express.json());
@@ -12,6 +12,7 @@ app.use('/api', inventoryRouter);
 app.use('/api', orderRouter);
 app.use('/api', reportRouter);
 app.use('/api', aiRouter);
+app.use('/api', forecastRouter);
 
 const server = createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });

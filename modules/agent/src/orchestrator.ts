@@ -11,7 +11,7 @@ import { evaluate } from "./evaluator.js";
 import { executeWorker } from "./workers/index.js";
 import { models } from "./llm-models/index.js";
 
-const MAX_RETRIES = 5;
+const MAX_RETRIES = 3;
 
 const agent = createAgent<OrchestratorDecision>({
   name: "Orchestrator",
@@ -48,7 +48,9 @@ export const process = async (
   return executeWithEvaluation(decision);
 };
 
-const parseWorkerOutput = (output: string): { message: string; data: unknown | null } => {
+const parseWorkerOutput = (
+  output: string
+): { message: string; data: unknown | null } => {
   const resultMatch = output.match(/^(.*?)\n\nResult:\n(.+)$/s);
   if (!resultMatch) {
     return { message: output, data: null };
@@ -78,7 +80,7 @@ const executeWithEvaluation = async (
     console.log(`🔄 ORCHESTRATOR: Attempt ${attempt + 1}/${MAX_RETRIES}`);
 
     const workerStart = Date.now();
-    const parameters = JSON.parse(decision.parameters_json || '{}');
+    const parameters = JSON.parse(decision.parameters_json || "{}");
     workerResult = await executeWorker(
       decision.worker_type as WorkerType,
       decision.task_description,
@@ -115,7 +117,12 @@ const executeWithEvaluation = async (
 
     if (evalResult.passed) {
       console.log("=".repeat(50));
-      return buildResponse(workerResult.output, decision.success_criteria, evalResult, false);
+      return buildResponse(
+        workerResult.output,
+        decision.success_criteria,
+        evalResult,
+        false
+      );
     }
 
     feedback = `${evalResult.feedback}\n\nSuggestions: ${evalResult.suggestions}`;
@@ -125,7 +132,12 @@ const executeWithEvaluation = async (
         "⚠️  ORCHESTRATOR: Max retries reached, returning partial result"
       );
       console.log("=".repeat(50));
-      return buildResponse(workerResult.output, decision.success_criteria, evalResult, true);
+      return buildResponse(
+        workerResult.output,
+        decision.success_criteria,
+        evalResult,
+        true
+      );
     }
   }
 
@@ -140,7 +152,11 @@ const buildResponse = (
   maxRetriesReached: boolean
 ): OrchestratorResponse => {
   const { message, data } = parseWorkerOutput(output);
-  const status = maxRetriesReached ? "partial" : evalResult.passed ? "passed" : "failed";
+  const status = maxRetriesReached
+    ? "partial"
+    : evalResult.passed
+    ? "passed"
+    : "failed";
 
   return {
     message,

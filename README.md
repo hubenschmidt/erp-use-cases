@@ -149,6 +149,9 @@ modules/agent/
 "Transfer 10 units of GADGET-002 from WH-EAST to WH-WEST"
 "Which items are below their reorder point?"
 "Give me an order analytics summary"
+"What is the demand forecast for WIDGET-001 for the next 30 days?"
+"Which products are at risk of stockout? Show me recommendations"
+"Analyze the seasonal demand patterns for SEASONAL-005"
 ```
 
 ## Testing

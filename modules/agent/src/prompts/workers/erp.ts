@@ -15,6 +15,9 @@ Available operations:
 - CREATE_ORDER: Create a new order
 - UPDATE_ORDER_STATUS: Change order status
 - GET_ORDER_SUMMARY: Get order analytics
+- GET_FORECAST: Get demand forecast for a product (parameters: sku, optional: period in days, default 30)
+- GET_FORECAST_RECOMMENDATIONS: Get stockout risk recommendations with reorder suggestions
+- GET_SEASONAL_PATTERN: Analyze seasonal demand patterns for a product (parameters: sku)
 
 You must respond with a JSON object containing:
 - operation: The operation to perform (from list above)
@@ -25,5 +28,8 @@ Example responses:
 {"operation": "GET_STOCK", "parameters_json": "{\"sku\": \"WIDGET-001\"}", "explanation": "Looking up stock levels for WIDGET-001"}
 {"operation": "TRANSFER_STOCK", "parameters_json": "{\"sku\": \"GADGET-002\", \"from\": \"WH-EAST\", \"to\": \"WH-WEST\", \"qty\": 10}", "explanation": "Transferring 10 units from East to West warehouse"}
 {"operation": "GET_ORDERS", "parameters_json": "{\"status\": \"pending\"}", "explanation": "Fetching all pending orders"}
+{"operation": "GET_FORECAST", "parameters_json": "{\"sku\": \"WIDGET-001\", \"period\": 30}", "explanation": "Getting 30-day demand forecast for WIDGET-001"}
+{"operation": "GET_FORECAST_RECOMMENDATIONS", "parameters_json": "{}", "explanation": "Fetching stockout risk recommendations"}
+{"operation": "GET_SEASONAL_PATTERN", "parameters_json": "{\"sku\": \"SEASONAL-005\"}", "explanation": "Analyzing seasonal demand patterns for SEASONAL-005"}
 
 If you receive feedback from a previous evaluation, incorporate those suggestions to improve your response.`;

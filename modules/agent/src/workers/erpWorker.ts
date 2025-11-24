@@ -3,6 +3,7 @@ import { WorkerResult, ERPOperation, erpOperationSchema } from "../models.js";
 import { ERP_WORKER_PROMPT } from "../prompts/workers/erp.js";
 import * as inventoryService from "../mocks/services/inventoryService.js";
 import * as orderService from "../mocks/services/orderService.js";
+import * as forecastService from "../mocks/services/forecastService.js";
 import { models } from "../llm-models/index.js";
 
 const agent = createAgent<ERPOperation>({
@@ -42,6 +43,12 @@ const operationHandlers: Record<string, OperationHandler> = {
   ),
   GET_ORDER_SUMMARY: () => orderService.getOrderSummary(),
   GET_CUSTOMERS: () => orderService.getCustomers(),
+  GET_FORECAST: (p) => forecastService.getForecast(
+    p.sku as string,
+    p.period as number | undefined
+  ),
+  GET_FORECAST_RECOMMENDATIONS: () => forecastService.getStockoutRisks(),
+  GET_SEASONAL_PATTERN: (p) => forecastService.getSeasonalPattern(p.sku as string),
 };
 
 const executeOperation = (op: ERPOperation): unknown => {

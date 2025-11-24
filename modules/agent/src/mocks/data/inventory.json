@@ -3,14 +3,14 @@
     {"sku": "WIDGET-001", "product_name": "Standard Widget", "location": "WH-EAST", "qty_on_hand": 150, "qty_reserved": 20, "reorder_point": 50, "last_movement": "2025-11-20"},
     {"sku": "WIDGET-001", "product_name": "Standard Widget", "location": "WH-WEST", "qty_on_hand": 85, "qty_reserved": 10, "reorder_point": 50, "last_movement": "2025-11-18"},
     {"sku": "WIDGET-001", "product_name": "Standard Widget", "location": "WH-CENTRAL", "qty_on_hand": 200, "qty_reserved": 0, "reorder_point": 50, "last_movement": "2025-11-22"},
-    {"sku": "GADGET-002", "product_name": "Premium Gadget", "location": "WH-EAST", "qty_on_hand": 25, "qty_reserved": 5, "reorder_point": 30, "last_movement": "2025-11-15"},
-    {"sku": "GADGET-002", "product_name": "Premium Gadget", "location": "WH-WEST", "qty_on_hand": 10, "qty_reserved": 0, "reorder_point": 30, "last_movement": "2025-10-01"},
+    {"sku": "GADGET-002", "product_name": "Premium Gadget", "location": "WH-EAST", "qty_on_hand": 8, "qty_reserved": 3, "reorder_point": 30, "last_movement": "2025-11-15"},
+    {"sku": "GADGET-002", "product_name": "Premium Gadget", "location": "WH-WEST", "qty_on_hand": 4, "qty_reserved": 2, "reorder_point": 30, "last_movement": "2025-10-01"},
     {"sku": "GADGET-002", "product_name": "Premium Gadget", "location": "WH-CENTRAL", "qty_on_hand": 0, "qty_reserved": 0, "reorder_point": 30, "last_movement": "2025-09-15"},
     {"sku": "COMP-003", "product_name": "Component A", "location": "WH-EAST", "qty_on_hand": 500, "qty_reserved": 100, "reorder_point": 200, "last_movement": "2025-11-21"},
     {"sku": "COMP-003", "product_name": "Component A", "location": "WH-WEST", "qty_on_hand": 350, "qty_reserved": 50, "reorder_point": 200, "last_movement": "2025-11-19"},
     {"sku": "LEGACY-004", "product_name": "Legacy Part", "location": "WH-EAST", "qty_on_hand": 1200, "qty_reserved": 0, "reorder_point": 100, "last_movement": "2025-03-10"},
     {"sku": "LEGACY-004", "product_name": "Legacy Part", "location": "WH-WEST", "qty_on_hand": 800, "qty_reserved": 0, "reorder_point": 100, "last_movement": "2025-02-28"},
-    {"sku": "SEASONAL-005", "product_name": "Holiday Special", "location": "WH-CENTRAL", "qty_on_hand": 5000, "qty_reserved": 0, "reorder_point": 500, "last_movement": "2025-01-15"}
+    {"sku": "SEASONAL-005", "product_name": "Holiday Special", "location": "WH-CENTRAL", "qty_on_hand": 75, "qty_reserved": 10, "reorder_point": 500, "last_movement": "2025-11-20"}
   ],
   "locations": [
     {"id": "WH-EAST", "name": "East Warehouse", "address": "123 East St, Newark, NJ"},

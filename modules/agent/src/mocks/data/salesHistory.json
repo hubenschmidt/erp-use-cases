@@ -1,0 +1,326 @@
+{
+  "salesHistory": [
+    {
+      "id": "SH-001",
+      "sku": "WIDGET-001",
+      "qty_sold": 45,
+      "sale_date": "2024-01-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-002",
+      "sku": "WIDGET-001",
+      "qty_sold": 52,
+      "sale_date": "2024-02-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-003",
+      "sku": "WIDGET-001",
+      "qty_sold": 48,
+      "sale_date": "2024-03-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-004",
+      "sku": "WIDGET-001",
+      "qty_sold": 55,
+      "sale_date": "2024-04-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-005",
+      "sku": "WIDGET-001",
+      "qty_sold": 60,
+      "sale_date": "2024-05-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-006",
+      "sku": "WIDGET-001",
+      "qty_sold": 58,
+      "sale_date": "2024-06-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-007",
+      "sku": "WIDGET-001",
+      "qty_sold": 50,
+      "sale_date": "2024-07-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-008",
+      "sku": "WIDGET-001",
+      "qty_sold": 62,
+      "sale_date": "2024-08-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-009",
+      "sku": "WIDGET-001",
+      "qty_sold": 55,
+      "sale_date": "2024-09-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-010",
+      "sku": "WIDGET-001",
+      "qty_sold": 65,
+      "sale_date": "2024-10-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-011",
+      "sku": "WIDGET-001",
+      "qty_sold": 70,
+      "sale_date": "2024-11-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-012",
+      "sku": "GADGET-002",
+      "qty_sold": 12,
+      "sale_date": "2024-01-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-013",
+      "sku": "GADGET-002",
+      "qty_sold": 15,
+      "sale_date": "2024-02-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-014",
+      "sku": "GADGET-002",
+      "qty_sold": 18,
+      "sale_date": "2024-03-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-015",
+      "sku": "GADGET-002",
+      "qty_sold": 14,
+      "sale_date": "2024-04-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-016",
+      "sku": "GADGET-002",
+      "qty_sold": 16,
+      "sale_date": "2024-05-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-017",
+      "sku": "GADGET-002",
+      "qty_sold": 20,
+      "sale_date": "2024-06-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-018",
+      "sku": "GADGET-002",
+      "qty_sold": 22,
+      "sale_date": "2024-07-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-019",
+      "sku": "GADGET-002",
+      "qty_sold": 19,
+      "sale_date": "2024-08-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-020",
+      "sku": "GADGET-002",
+      "qty_sold": 25,
+      "sale_date": "2024-09-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-021",
+      "sku": "GADGET-002",
+      "qty_sold": 28,
+      "sale_date": "2024-10-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-022",
+      "sku": "GADGET-002",
+      "qty_sold": 30,
+      "sale_date": "2024-11-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-023",
+      "sku": "COMP-003",
+      "qty_sold": 200,
+      "sale_date": "2024-01-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-024",
+      "sku": "COMP-003",
+      "qty_sold": 180,
+      "sale_date": "2024-02-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-025",
+      "sku": "COMP-003",
+      "qty_sold": 220,
+      "sale_date": "2024-03-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-026",
+      "sku": "COMP-003",
+      "qty_sold": 190,
+      "sale_date": "2024-04-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-027",
+      "sku": "COMP-003",
+      "qty_sold": 210,
+      "sale_date": "2024-05-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-028",
+      "sku": "COMP-003",
+      "qty_sold": 195,
+      "sale_date": "2024-06-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-029",
+      "sku": "COMP-003",
+      "qty_sold": 205,
+      "sale_date": "2024-07-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-030",
+      "sku": "COMP-003",
+      "qty_sold": 215,
+      "sale_date": "2024-08-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-031",
+      "sku": "COMP-003",
+      "qty_sold": 225,
+      "sale_date": "2024-09-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-032",
+      "sku": "COMP-003",
+      "qty_sold": 230,
+      "sale_date": "2024-10-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-033",
+      "sku": "COMP-003",
+      "qty_sold": 240,
+      "sale_date": "2024-11-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-034",
+      "sku": "SEASONAL-005",
+      "qty_sold": 5,
+      "sale_date": "2024-01-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-035",
+      "sku": "SEASONAL-005",
+      "qty_sold": 3,
+      "sale_date": "2024-02-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-036",
+      "sku": "SEASONAL-005",
+      "qty_sold": 4,
+      "sale_date": "2024-03-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-037",
+      "sku": "SEASONAL-005",
+      "qty_sold": 6,
+      "sale_date": "2024-04-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-038",
+      "sku": "SEASONAL-005",
+      "qty_sold": 8,
+      "sale_date": "2024-05-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-039",
+      "sku": "SEASONAL-005",
+      "qty_sold": 10,
+      "sale_date": "2024-06-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-040",
+      "sku": "SEASONAL-005",
+      "qty_sold": 12,
+      "sale_date": "2024-07-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-041",
+      "sku": "SEASONAL-005",
+      "qty_sold": 15,
+      "sale_date": "2024-08-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-042",
+      "sku": "SEASONAL-005",
+      "qty_sold": 25,
+      "sale_date": "2024-09-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-043",
+      "sku": "SEASONAL-005",
+      "qty_sold": 80,
+      "sale_date": "2024-10-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-044",
+      "sku": "SEASONAL-005",
+      "qty_sold": 150,
+      "sale_date": "2024-11-15",
+      "location": "WAREHOUSE-A"
+    },
+    {
+      "id": "SH-045",
+      "sku": "LEGACY-004",
+      "qty_sold": 2,
+      "sale_date": "2024-03-15",
+      "location": "WAREHOUSE-B"
+    },
+    {
+      "id": "SH-046",
+      "sku": "LEGACY-004",
+      "qty_sold": 1,
+      "sale_date": "2024-06-15",
+      "location": "WAREHOUSE-B"
+    }
+  ]
+}

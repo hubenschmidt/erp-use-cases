@@ -333,6 +333,60 @@
           }
         },
         {
+          "name": "Query - Demand Forecast",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/query",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "query"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"What is the demand forecast for WIDGET-001 for the next 30 days?\",\n  \"session_id\": \"demo-session\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Query - Stockout Risk Recommendations",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/query",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "query"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Which products are at risk of stockout? Show me recommendations\",\n  \"session_id\": \"demo-session\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Query - Seasonal Pattern Analysis",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/query",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "query"]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"Analyze the seasonal demand patterns for SEASONAL-005\",\n  \"session_id\": \"demo-session\"\n}"
+            }
+          }
+        },
+        {
           "name": "Clear Session",
           "request": {
             "method": "DELETE",
@@ -340,6 +394,83 @@
               "raw": "{{baseUrl}}/api/ai/session/demo-session",
               "host": ["{{baseUrl}}"],
               "path": ["api", "ai", "session", "demo-session"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forecast",
+      "item": [
+        {
+          "name": "Get Forecast by SKU (30 days)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/forecast/WIDGET-001",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forecast", "WIDGET-001"]
+            }
+          }
+        },
+        {
+          "name": "Get Forecast by SKU (7 days)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/forecast/WIDGET-001?period=7",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forecast", "WIDGET-001"],
+              "query": [
+                {"key": "period", "value": "7"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Forecast by SKU (90 days)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/forecast/WIDGET-001?period=90",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forecast", "WIDGET-001"],
+              "query": [
+                {"key": "period", "value": "90"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Stockout Recommendations",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/forecast/recommendations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forecast", "recommendations"]
+            }
+          }
+        },
+        {
+          "name": "Get Seasonal Pattern",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/forecast/seasonal/SEASONAL-005",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forecast", "seasonal", "SEASONAL-005"]
+            }
+          }
+        },
+        {
+          "name": "Get Forecast - Insufficient Data",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/forecast/LEGACY-004",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "forecast", "LEGACY-004"]
             }
           }
         }
