@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { process as frontlineProcess } from '../../frontline.js';
-import { process as orchestratorProcess } from '../../orchestrator.js';
-import { Message, OrchestratorResponse } from '../../models.js';
+import { process as frontlineProcess } from '../frontline.js';
+import { process as orchestratorProcess } from '../orchestrator.js';
+import { Message, OrchestratorResponse } from '../models.js';
 
 const sessions = new Map<string, Message[]>();
 
@@ -91,7 +91,7 @@ export const query = async (req: Request, res: Response) => {
 
     const errorMsg = isZodError
       ? (error as { issues: Array<{ path: string[]; message: string }> }).issues
-          .map(i => `${i.path.join('.')}: ${i.message}`).join('; ')
+        .map(i => `${i.path.join('.')}: ${i.message}`).join('; ')
       : error instanceof Error ? error.message : String(error);
 
     res.status(500).json({

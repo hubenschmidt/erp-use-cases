@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { handleChat } from './runner.js';
-import { inventoryRouter, orderRouter, reportRouter, aiRouter, forecastRouter } from './mocks/routes/index.js';
+import { inventoryRouter, orderRouter, reportRouter, aiRouter, forecastRouter } from './routes/index.js';
 
 const app = express();
 app.use(express.json());

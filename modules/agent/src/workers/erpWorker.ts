@@ -1,9 +1,9 @@
 import { createAgent } from "../lib/agent.js";
 import { WorkerResult, ERPOperation, erpOperationSchema } from "../models.js";
 import { ERP_WORKER_PROMPT } from "../prompts/workers/erp.js";
-import * as inventoryService from "../mocks/services/inventoryService.js";
-import * as orderService from "../mocks/services/orderService.js";
-import * as forecastService from "../mocks/services/forecastService.js";
+import * as inventoryService from "../services/inventoryService.js";
+import * as orderService from "../services/orderService.js";
+import * as forecastService from "../services/forecastService.js";
 import { models } from "../llm-models/index.js";
 
 const agent = createAgent<ERPOperation>({
@@ -98,8 +98,7 @@ Determine the appropriate ERP operation and execute it.`;
       "error" in operationResult
     ) {
       console.error(
-        `❌ ERP_WORKER: Operation failed: ${
-          (operationResult as { error: string }).error
+        `❌ ERP_WORKER: Operation failed: ${(operationResult as { error: string }).error
         }`
       );
       return {

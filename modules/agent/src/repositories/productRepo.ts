@@ -3,7 +3,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const DATA_PATH = join(__dirname, '..', 'data');
+const DATA_PATH = join(__dirname, '..', 'mocks', 'data');
 
 interface Product {
   sku: string;
